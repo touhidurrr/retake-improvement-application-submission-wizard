@@ -25,9 +25,6 @@ const RetakeSubmissionSchema = new Schema(
   { collection: "RetakeSubmission", timestamps: true },
 );
 
-// Check if we're in a development environment
-const isDev = process.env.NODE_ENV === "development";
-
 mongoose.connect(process.env.MONGO_URL!, {
   dbName: "bubt",
   appName: "RetakeImprovementWizard",

@@ -70,7 +70,7 @@ export async function saveStudent(
     const { _id, ...update } = studentData;
     if (update.email !== undefined && update.email.trim() === "") {
       update.email = undefined;
-      //@ts-ignore
+      //@ts-expect-error valid mongodb update query
       update.$unset = { email: 1 };
     }
     const updatedStudent = await db.RetakeSubmission.findByIdAndUpdate(
