@@ -1,19 +1,8 @@
 "use server";
 
 import { db } from "@/db";
-import { Document } from "mongoose";
 
 interface Student {
-  _id: string;
-  name: string;
-  intake: number;
-  section: string;
-  phone: string;
-  email?: string;
-  courseCodes: string[];
-}
-
-interface RetakeSubmissionDocument extends Document {
   _id: string;
   name: string;
   intake: number;
@@ -30,26 +19,24 @@ interface Course {
 
 export async function getCourses(): Promise<Course[]> {
   try {
-    const courses = await db.CourseCode.find().lean();
-    return courses.map((course) => ({
+    const courses = await db.CourseCode.find({}, { _id: 0, code: 1, name: 1 });
+    return courses.map(course => ({
       code: course.code,
-      name: course.name,
+      name: course.name
     }));
   } catch (error) {
     console.error("Error fetching courses:", error);
     return [];
   }
 }
-
+ 
 export async function searchStudent(id: string): Promise<Student | null> {
   try {
-    const foundStudent = (await db.RetakeSubmission.findById(
-      id,
-    ).lean()) as RetakeSubmissionDocument | null;
+    const foundStudent = await db.RetakeSubmission.findById(id);
     if (!foundStudent) return null;
 
     return {
-      _id: foundStudent._id,
+      _id: foundStudent._id.toString(),
       name: foundStudent.name,
       intake: foundStudent.intake,
       section: foundStudent.section,
@@ -64,7 +51,7 @@ export async function searchStudent(id: string): Promise<Student | null> {
 }
 
 export async function saveStudent(
-  studentData: Student,
+  studentData: Student
 ): Promise<Student | null> {
   try {
     const { _id, ...update } = studentData;
@@ -76,11 +63,13 @@ export async function saveStudent(
     const updatedStudent = await db.RetakeSubmission.findByIdAndUpdate(
       { _id },
       update,
-      { upsert: true, new: true },
+      { upsert: true, new: true }
     );
 
+    if (!updatedStudent) return null;
+
     return {
-      _id: updatedStudent._id,
+      _id: updatedStudent._id.toString(),
       name: updatedStudent.name,
       intake: updatedStudent.intake,
       section: updatedStudent.section,
@@ -91,5 +80,77 @@ export async function saveStudent(
   } catch (error) {
     console.error("Error saving student:", error);
     return null;
+  }
+}
+
+export async function getCourseRankings() {
+  try {
+    const [courses, students] = await Promise.all([
+      db.CourseCode.find({}),
+      db.RetakeSubmission.find(
+        {},
+        {
+          _id: 1,
+          name: 1,
+          intake: 1,
+          section: 1,
+          courseCodes: 1,
+        }
+      ),
+    ]);
+
+    const courseMap = new Map(
+      courses.map((course) => [course.code, course.name])
+    );
+
+    // Create a map to store course rankings
+    const courseRankings = new Map<
+      string,
+      {
+        code: string;
+        name: string;
+        count: number;
+        students: Array<{
+          id: string;
+          name: string;
+          intake: number;
+          section: string;
+        }>;
+      }
+    >();
+
+    // Process each student's course selections
+    for (const student of students) {
+      for (const courseCode of student.courseCodes) {
+        if (!courseRankings.has(courseCode)) {
+          courseRankings.set(courseCode, {
+            code: courseCode,
+            name: courseMap.get(courseCode) || courseCode,
+            count: 0,
+            students: [],
+          });
+        }
+
+        const ranking = courseRankings.get(courseCode)!;
+        ranking.count++;
+        ranking.students.push({
+          id: student._id.toString(),
+          name: student.name,
+          intake: student.intake,
+          section: student.section,
+        });
+      }
+    }
+
+    // Convert to array and sort by count
+    return {
+      totalStudents: students.length,
+      rankings: Array.from(courseRankings.values()).sort(
+        (a, b) => b.count - a.count
+      ),
+    };
+  } catch (error) {
+    console.error("Error fetching course rankings:", error);
+    return { totalStudents: 0, rankings: [] };
   }
 }

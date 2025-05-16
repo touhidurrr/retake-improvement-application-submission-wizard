@@ -2,15 +2,15 @@ import mongoose, { Schema } from "mongoose";
 
 const CourseCodeSchema = new Schema(
   {
-    code: { type: String, required: true, index: true },
+    code: { type: String, required: true },
     name: { type: String, required: true },
   },
   { collection: "CourseCode", timestamps: true },
-);
+).index({ code: 1, name: 1 }, { unique: true });
 
 const RetakeSubmissionSchema = new Schema(
   {
-    _id: { type: String, required: true, index: true }, // Student ID
+    _id: { type: String, required: true }, // Student ID
     name: { type: String, required: true },
     intake: { type: Schema.Types.Int32, required: true },
     section: { type: String, required: true },

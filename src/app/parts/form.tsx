@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
+import Link from "next/link";
 
 const formSchema = z.object({
   id: z.string().min(10, {
@@ -49,8 +50,8 @@ const studentFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  intake: z.string().min(1, {
-    message: "Intake is required.",
+  intake: z.coerce.number().min(1, {
+    message: "Intake must be a non-zero positive integer.",
   }),
   section: z.string().min(1, {
     message: "Section is required.",
@@ -117,7 +118,7 @@ export function IDSearchForm() {
     resolver: zodResolver(studentFormSchema),
     defaultValues: {
       name: "",
-      intake: "",
+      intake: 0,
       section: "",
       phone: "",
       email: "",
@@ -134,7 +135,7 @@ export function IDSearchForm() {
         setStudent(foundStudent);
         studentForm.reset({
           name: foundStudent.name,
-          intake: foundStudent.intake.toString(),
+          intake: foundStudent.intake,
           section: foundStudent.section,
           phone: foundStudent.phone,
           email: foundStudent.email || "",
@@ -159,7 +160,6 @@ export function IDSearchForm() {
       const studentData: Student = {
         _id: searchForm.getValues("id"),
         ...values,
-        intake: parseInt(values.intake),
       };
 
       const updatedStudent = await saveStudent(studentData);
@@ -401,8 +401,20 @@ export function IDSearchForm() {
                 : "Your application has been submitted successfully."}
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end">
-            <Button onClick={() => setShowSuccessDialog(false)}>Close</Button>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-gray-600">
+              You can view the current rankings and see how many students have submitted for each course.
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowSuccessDialog(false)}>
+                Close
+              </Button>
+              <Button asChild>
+                <Link href="/ranking">
+                  View Rankings
+                </Link>
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
