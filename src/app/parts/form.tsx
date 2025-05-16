@@ -324,14 +324,19 @@ export function IDSearchForm() {
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-full p-0">
-                            <Command>
+                            <Command
+                              filter={(value, search) => {
+                                const courseText = value.toLowerCase();
+                                return courseText.includes(search.toLowerCase()) ? 1 : 0;
+                              }}
+                            >
                               <CommandInput placeholder="Search courses..." />
                               <CommandEmpty>No course found.</CommandEmpty>
                               <CommandGroup className="max-h-64 overflow-auto">
                                 {courses.map((course) => (
                                   <CommandItem
                                     key={course.code}
-                                    value={course.code}
+                                    value={`${course.code} ${course.name}`}
                                     onSelect={() => {
                                       handleCourseSelect(course.code);
                                     }}
@@ -339,8 +344,7 @@ export function IDSearchForm() {
                                     <Check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        field.value.includes(course.code) ||
-                                          field.value.includes(course.name)
+                                        field.value.includes(course.code)
                                           ? "opacity-100"
                                           : "opacity-0",
                                       )}
