@@ -46,6 +46,8 @@ const formSchema = z.object({
   }),
 });
 
+const sanitizeString = (str: string) => str.replaceAll(/\s+/g, " ").trim();
+
 const studentFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -134,11 +136,11 @@ export function IDSearchForm() {
       if (foundStudent) {
         setStudent(foundStudent);
         studentForm.reset({
-          name: foundStudent.name,
+          name: sanitizeString(foundStudent.name),
           intake: foundStudent.intake,
-          section: foundStudent.section,
-          phone: foundStudent.phone,
-          email: foundStudent.email || "",
+          section: sanitizeString(foundStudent.section),
+          phone: sanitizeString(foundStudent.phone),
+          email: sanitizeString(foundStudent.email || ""),
           courseCodes: foundStudent.courseCodes,
         });
       } else {
