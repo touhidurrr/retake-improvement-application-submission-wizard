@@ -17,22 +17,28 @@ interface Course {
   name: string;
 }
 
+const hiddenEmail = "email-hidden-for-privacy@courseimprove.studio";
+const hiddenPhone = "01234567890";
+
 export async function getCourses(): Promise<Course[]> {
   try {
     const courses = await db.CourseCode.find({}, { _id: 0, code: 1, name: 1 });
-    return courses.map(course => ({
+    return courses.map((course) => ({
       code: course.code,
-      name: course.name
+      name: course.name,
     }));
   } catch (error) {
     console.error("Error fetching courses:", error);
     return [];
   }
 }
- 
+
 export async function searchStudent(id: string): Promise<Student | null> {
   try {
-    const foundStudent = await db.RetakeSubmission.findById(id);
+    const foundStudent = await db.RetakeSubmission.findById(id, {
+      phone: 0,
+      email: 0,
+    });
     if (!foundStudent) return null;
 
     return {
@@ -40,8 +46,8 @@ export async function searchStudent(id: string): Promise<Student | null> {
       name: foundStudent.name,
       intake: foundStudent.intake,
       section: foundStudent.section,
-      phone: foundStudent.phone,
-      email: foundStudent.email,
+      phone: hiddenPhone,
+      email: hiddenEmail,
       courseCodes: foundStudent.courseCodes,
     };
   } catch (error) {
@@ -51,19 +57,28 @@ export async function searchStudent(id: string): Promise<Student | null> {
 }
 
 export async function saveStudent(
-  studentData: Student
+  studentData: Student,
 ): Promise<Student | null> {
   try {
     const { _id, ...update } = studentData;
+
     if (update.email !== undefined && update.email.trim() === "") {
       update.email = undefined;
-      //@ts-expect-error valid mongodb update query
+      //@ts-expect-error update query does not need to match types
       update.$unset = { email: 1 };
+    } else if (update.email === hiddenEmail) {
+      update.email = undefined;
     }
+
+    if (update.phone === hiddenPhone) {
+      //@ts-expect-error update query does not need to match types
+      update.phone = undefined;
+    }
+
     const updatedStudent = await db.RetakeSubmission.findByIdAndUpdate(
       { _id },
       update,
-      { upsert: true, new: true }
+      { upsert: true, new: true },
     );
 
     if (!updatedStudent) return null;
@@ -95,12 +110,12 @@ export async function getCourseRankings() {
           intake: 1,
           section: 1,
           courseCodes: 1,
-        }
+        },
       ),
     ]);
 
     const courseMap = new Map(
-      courses.map((course) => [course.code, course.name])
+      courses.map((course) => [course.code, course.name]),
     );
 
     // Create a map to store course rankings
@@ -146,7 +161,7 @@ export async function getCourseRankings() {
     return {
       totalStudents: students.length,
       rankings: Array.from(courseRankings.values()).sort(
-        (a, b) => b.count - a.count
+        (a, b) => b.count - a.count,
       ),
     };
   } catch (error) {

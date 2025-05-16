@@ -1,4 +1,4 @@
-import { connection } from 'next/server'
+import { connection } from "next/server";
 import { getCourseRankings } from "../actions";
 import {
   Table,
@@ -34,12 +34,10 @@ export default async function RankingPage() {
   return (
     <div className="min-h-screen p-8 bg-gray-50">
       <main className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-4">
-          Course Rankings
-        </h1>
+        <h1 className="text-3xl font-bold text-center mb-4">Course Rankings</h1>
         <p className="text-gray-600 text-center mb-2">
-          Showing the number of students who have submitted applications for each course.
-          Click on a course to see the list of students.
+          Showing the number of students who have submitted applications for
+          each course. Click on a course to see the list of students.
         </p>
         <p className="text-lg font-semibold text-center mb-8">
           Total Students Submitted: {totalStudents}
@@ -88,4 +86,4 @@ export default async function RankingPage() {
       </main>
     </div>
   );
-} 
+}

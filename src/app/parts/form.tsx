@@ -28,7 +28,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -339,7 +339,8 @@ export function IDSearchForm() {
                                     <Check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        field.value.includes(course.code) || field.value.includes(course.name)
+                                        field.value.includes(course.code) ||
+                                          field.value.includes(course.name)
                                           ? "opacity-100"
                                           : "opacity-0",
                                       )}
@@ -403,16 +404,18 @@ export function IDSearchForm() {
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <p className="text-sm text-gray-600">
-              You can view the current rankings and see how many students have submitted for each course.
+              You can view the current rankings and see how many students have
+              submitted for each course.
             </p>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowSuccessDialog(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setShowSuccessDialog(false)}
+              >
                 Close
               </Button>
               <Button asChild>
-                <Link href="/ranking">
-                  View Rankings
-                </Link>
+                <Link href="/ranking">View Rankings</Link>
               </Button>
             </div>
           </div>
