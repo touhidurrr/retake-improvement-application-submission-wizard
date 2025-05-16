@@ -339,7 +339,7 @@ export function IDSearchForm() {
                                     <Check
                                       className={cn(
                                         "mr-2 h-4 w-4",
-                                        field.value.includes(course.code)
+                                        field.value.includes(course.code) || field.value.includes(course.name)
                                           ? "opacity-100"
                                           : "opacity-0",
                                       )}
