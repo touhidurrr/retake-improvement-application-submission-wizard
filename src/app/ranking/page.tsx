@@ -14,6 +14,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { BackToHome } from "../parts/back-to-home";
+import { WhatsAppButton } from "../parts/whatsapp-button";
+import { Copyright } from "../parts/copyright";
 
 interface CourseRanking {
   code: string;
@@ -34,7 +37,13 @@ export default async function RankingPage() {
   return (
     <div className="min-h-screen p-8 bg-gray-50">
       <main className="w-full max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center mb-4">Course Rankings</h1>
+        <div className="flex justify-between items-center mb-8">
+          <BackToHome />
+          <h1 className="text-3xl font-bold text-center flex-1">
+            Course Rankings
+          </h1>
+          <WhatsAppButton />
+        </div>
         <p className="text-gray-600 text-center mb-2">
           Showing the number of students who have submitted applications for
           each course. Click on a course to see the list of students.
@@ -84,6 +93,9 @@ export default async function RankingPage() {
           ))}
         </div>
       </main>
+      <div className="py-2">
+        <Copyright />
+      </div>
     </div>
   );
 }

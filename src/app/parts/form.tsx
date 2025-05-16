@@ -327,7 +327,9 @@ export function IDSearchForm() {
                             <Command
                               filter={(value, search) => {
                                 const courseText = value.toLowerCase();
-                                return courseText.includes(search.toLowerCase()) ? 1 : 0;
+                                return courseText.includes(search.toLowerCase())
+                                  ? 1
+                                  : 0;
                               }}
                             >
                               <CommandInput placeholder="Search courses..." />
