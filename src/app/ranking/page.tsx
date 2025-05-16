@@ -1,3 +1,4 @@
+import { connection } from 'next/server'
 import { getCourseRankings } from "../actions";
 import {
   Table,
@@ -27,6 +28,7 @@ interface CourseRanking {
 }
 
 export default async function RankingPage() {
+  await connection();
   const { totalStudents, rankings } = await getCourseRankings();
 
   return (
