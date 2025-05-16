@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Retake / Improvement Application Wizard",
-  description: "An unofficial web application for retake / improvement course planning.",
+  title: "Course Improvement Wizard",
+  description: "An unofficial web application for retake / improvement course planning for BUBT.",
 };
 
 export default function RootLayout({
