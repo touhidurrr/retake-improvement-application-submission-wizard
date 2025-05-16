@@ -30,6 +30,27 @@ export default function Home() {
         </p>
         <IDSearchForm />
       </main>
+      <div className="mt-8 text-center text-sm text-gray-500">
+        © {new Date().getFullYear()}{" "}
+        <a
+          href="https://github.com/touhidurrr"
+          className="text-gray-600 hover:text-gray-900 hover:underline transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Md. Touhidur Rahman
+        </a>
+        . All rights reserved.{" "}
+        <a
+          href="https://github.com/touhidurrr/retake-improvement-application-submission-wizard"
+          className="text-gray-600 hover:text-gray-900 hover:underline transition-colors"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>
+        .
+      </div>
     </div>
   );
 }
