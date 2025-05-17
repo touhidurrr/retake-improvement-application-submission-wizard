@@ -2,6 +2,12 @@
 
 import { db } from "@/db";
 import { sanitizeString } from "@/lib/utils";
+import { cookies } from "next/headers";
+import { createHash } from "crypto";
+
+if (!process.env.ADMIN_PASSWORD) {
+  console.error('ADMIN_PASSWORD environment variable is not set!');
+}
 
 interface Student {
   _id: string;
@@ -106,8 +112,69 @@ export async function saveStudent(
   }
 }
 
-export async function getCourseRankings() {
+interface CourseRankingsOptions {
+  includePhone?: boolean;
+}
+
+function generateAuthToken() {
+  const timestamp = Date.now();
+  const secret = process.env.ADMIN_PASSWORD || "";
+  return createHash("sha256")
+    .update(`${timestamp}:${secret}`)
+    .digest("hex");
+}
+
+export async function checkAuth() {
+  if (!process.env.ADMIN_PASSWORD) {
+    console.error('ADMIN_PASSWORD environment variable is not set!');
+    return false;
+  }
+
+  const cookieStore = await cookies();
+  const authCookie = cookieStore.get("admin_auth");
+  
+  if (!authCookie?.value) return false;
+  
+  const [timestamp, token] = authCookie.value.split(":");
+  const now = Date.now();
+  
+  // Check if token is expired (1 hour)
+  if (now - parseInt(timestamp) > 60 * 60 * 1000) {
+    return false;
+  }
+  
+  // Validate token
+  const expectedToken = createHash("sha256")
+    .update(`${timestamp}:${process.env.ADMIN_PASSWORD}`)
+    .digest("hex");
+    
+  return token === expectedToken;
+}
+
+export async function authenticate(password: string) {
+  if (password === process.env.ADMIN_PASSWORD) {
+    const timestamp = Date.now();
+    const token = generateAuthToken();
+    const cookieStore = await cookies();
+    
+    cookieStore.set("admin_auth", `${timestamp}:${token}`, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60, // 1 hour
+    });
+    return true;
+  }
+  return false;
+}
+
+export async function getCourseRankings({ includePhone = false }: CourseRankingsOptions = {}) {
   try {
+    const isAuthenticated = await checkAuth();
+    if (!isAuthenticated) {
+      includePhone = false;
+    }
+
     const [courses, students] = await Promise.all([
       db.CourseCode.find({}),
       db.RetakeSubmission.find(
@@ -118,6 +185,7 @@ export async function getCourseRankings() {
           intake: 1,
           section: 1,
           courseCodes: 1,
+          ...(includePhone ? { phone: 1 } : {}),
         },
         {
           sort: { createdAt: 1 },
@@ -141,6 +209,7 @@ export async function getCourseRankings() {
           name: string;
           intake: number;
           section: string;
+          phone?: string;
         }>;
       }
     >();
@@ -164,6 +233,7 @@ export async function getCourseRankings() {
           name: student.name,
           intake: student.intake,
           section: student.section,
+          ...(includePhone ? { phone: student.phone } : {}),
         });
       }
     }
