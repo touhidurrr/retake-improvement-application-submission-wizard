@@ -120,7 +120,7 @@ export async function getCourseRankings() {
           courseCodes: 1,
         },
         {
-          sort: { updatedAt: 1 },
+          sort: { createdAt: 1 },
         },
       ),
     ]);
