@@ -84,8 +84,8 @@ export async function saveStudent(
 
     // sanitize data
     if (update.name) update.name = sanitizeString(update.name);
-    if (update.phone) update.phone = sanitizeString(update.phone);
     if (update.email) update.email = sanitizeString(update.email);
+    if (update.phone) update.phone = sanitizeString(update.phone.replaceAll('-', '').replace(/^\s*\+?880/, "0"));
     if (update.section)
       update.section = sanitizeString(update.section.replace(/^\s*0/, ""));
 
@@ -132,22 +132,22 @@ export async function checkAuth() {
 
   const cookieStore = await cookies();
   const authCookie = cookieStore.get("admin_auth");
-  
+
   if (!authCookie?.value) return false;
-  
+
   const [timestamp, token] = authCookie.value.split(":");
   const now = Date.now();
-  
+
   // Check if token is expired (1 hour)
   if (now - parseInt(timestamp) > 60 * 60 * 1000) {
     return false;
   }
-  
+
   // Validate token
   const expectedToken = createHash("sha256")
     .update(`${timestamp}:${process.env.ADMIN_PASSWORD}`)
     .digest("hex");
-    
+
   return token === expectedToken;
 }
 
@@ -156,7 +156,7 @@ export async function authenticate(password: string) {
     const timestamp = Date.now();
     const token = generateAuthToken();
     const cookieStore = await cookies();
-    
+
     cookieStore.set("admin_auth", `${timestamp}:${token}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
