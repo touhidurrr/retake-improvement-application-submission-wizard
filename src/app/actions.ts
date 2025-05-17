@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/db";
+import { sanitizeString } from "@/lib/utils";
 
 interface Student {
   _id: string;
@@ -74,6 +75,13 @@ export async function saveStudent(
       //@ts-expect-error update query does not need to match types
       update.phone = undefined;
     }
+
+    // sanitize data
+    if (update.name) update.name = sanitizeString(update.name);
+    if (update.phone) update.phone = sanitizeString(update.phone);
+    if (update.email) update.email = sanitizeString(update.email);
+    if (update.section)
+      update.section = sanitizeString(update.section.replace(/^\s*0/, ""));
 
     const updatedStudent = await db.RetakeSubmission.findByIdAndUpdate(
       { _id },
