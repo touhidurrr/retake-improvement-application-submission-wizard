@@ -128,6 +128,25 @@ export function IDSearchForm() {
     defaultValues: studentFormDefaultValues,
   });
 
+  const updateStudentsForm = (student: Student | null) => {
+    if (!student) {
+      studentForm.reset({ ...studentFormDefaultValues });
+      return;
+    }
+
+    studentForm.reset({
+      name: student.name,
+      intake: student.intake,
+      section: student.section,
+      phone: student.phone,
+      email: student.email || "",
+      courseCodes: student.courseCodes,
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => updateStudentsForm(student), [student]);
+
   // Handle search
   async function onSearch(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -135,18 +154,8 @@ export function IDSearchForm() {
       const foundStudent = await searchStudent(values.id);
 
       setStudent(foundStudent);
-      if (!foundStudent) studentForm.reset({ ...studentFormDefaultValues });
-      else {
-        studentForm.reset({
-          name: foundStudent.name,
-          intake: foundStudent.intake,
-          section: foundStudent.section,
-          phone: foundStudent.phone,
-          email: foundStudent.email || "",
-          courseCodes: foundStudent.courseCodes,
-        });
-      }
-
+      // useEffect doesn't get called occasionally
+      updateStudentsForm(foundStudent);
       setHasSearched(true);
     } catch (error) {
       console.error("Error searching student:", error);
@@ -167,6 +176,7 @@ export function IDSearchForm() {
       const updatedStudent = await saveStudent(studentData);
       if (updatedStudent) {
         setStudent(updatedStudent);
+        updateStudentsForm(updatedStudent);
         setShowSuccessDialog(true);
       }
     } catch (error) {
