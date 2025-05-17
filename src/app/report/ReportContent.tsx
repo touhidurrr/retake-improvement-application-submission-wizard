@@ -54,7 +54,9 @@ export default function ReportContent() {
     <div className="container mx-auto p-4 print:p-0 print:max-w-none">
       <div className="flex justify-between items-center mb-6 print:mb-4">
         <div>
-          <h1 className="text-2xl font-bold print:text-xl">Student Report by Course</h1>
+          <h1 className="text-2xl font-bold print:text-xl">
+            Student Report by Course
+          </h1>
           <p className="text-gray-600 print:text-sm print:mt-1">
             Total Students: {data.totalStudents}
           </p>
@@ -63,7 +65,10 @@ export default function ReportContent() {
       </div>
 
       {data.rankings.map((group) => (
-        <div key={group.code} className="mb-8 print:mb-6 print:break-inside-avoid">
+        <div
+          key={group.code}
+          className="mb-8 print:mb-6 print:break-inside-avoid"
+        >
           <h2 className="text-xl font-semibold mb-4 print:text-lg print:mb-2 print:bg-gray-100 print:p-2">
             {group.name} ({group.code}) - {group.count} Students
           </h2>
@@ -71,21 +76,41 @@ export default function ReportContent() {
             <table className="min-w-full bg-white border border-gray-300 print:border-collapse">
               <thead>
                 <tr className="bg-gray-100 print:bg-gray-100">
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">Student ID</th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-left">Name</th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-right">Intake</th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-right">Section</th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">Phone</th>
+                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
+                    Student ID
+                  </th>
+                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-left">
+                    Name
+                  </th>
+                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-right">
+                    Intake
+                  </th>
+                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-right">
+                    Section
+                  </th>
+                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
+                    Phone
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {group.students.map((student) => (
                   <tr key={student.id} className="print:text-sm">
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">{student.id}</td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-left">{student.name}</td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-right">{student.intake}</td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-right">{student.section}</td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">{student.phone}</td>
+                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">
+                      {student.id}
+                    </td>
+                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-left">
+                      {student.name}
+                    </td>
+                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-right">
+                      {student.intake}
+                    </td>
+                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-right">
+                      {student.section}
+                    </td>
+                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">
+                      {student.phone}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -95,4 +120,4 @@ export default function ReportContent() {
       ))}
     </div>
   );
-} 
+}

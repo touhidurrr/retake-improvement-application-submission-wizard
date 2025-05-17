@@ -11,7 +11,7 @@ export default function PasswordForm({ onSuccess }: { onSuccess: () => void }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading) return;
-    
+
     setError("");
     setIsLoading(true);
 
@@ -35,7 +35,10 @@ export default function PasswordForm({ onSuccess }: { onSuccess: () => void }) {
         <h2 className="text-2xl font-bold mb-6 text-center">Admin Access</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Password
             </label>
             <input
@@ -60,4 +63,4 @@ export default function PasswordForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
     </div>
   );
-} 
+}
