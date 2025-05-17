@@ -1,5 +1,9 @@
-import { connection } from "next/server";
-import { getCourseRankings } from "../actions";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import {
   Table,
   TableBody,
@@ -8,15 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { connection } from "next/server";
+import { getCourseRankings } from "../actions";
 import { BackToHome } from "../parts/back-to-home";
-import { WhatsAppButton } from "../parts/whatsapp-button";
 import { Copyright } from "../parts/copyright";
+import { WhatsAppButton } from "../parts/whatsapp-button";
 
 interface CourseRanking {
   code: string;

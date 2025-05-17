@@ -113,17 +113,19 @@ export function IDSearchForm() {
     },
   });
 
+  const studentFormDefaultValues = {
+    name: "",
+    intake: 0,
+    section: "",
+    phone: "",
+    email: "",
+    courseCodes: [],
+  };
+
   // Student form
   const studentForm = useForm<StudentFormData>({
     resolver: zodResolver(studentFormSchema),
-    defaultValues: {
-      name: "",
-      intake: 0,
-      section: "",
-      phone: "",
-      email: "",
-      courseCodes: [],
-    },
+    defaultValues: studentFormDefaultValues,
   });
 
   // Handle search
@@ -131,8 +133,10 @@ export function IDSearchForm() {
     setIsLoading(true);
     try {
       const foundStudent = await searchStudent(values.id);
-      if (foundStudent) {
-        setStudent(foundStudent);
+
+      setStudent(foundStudent);
+      if (!foundStudent) studentForm.reset({ ...studentFormDefaultValues });
+      else {
         studentForm.reset({
           name: foundStudent.name,
           intake: foundStudent.intake,
@@ -141,10 +145,8 @@ export function IDSearchForm() {
           email: foundStudent.email || "",
           courseCodes: foundStudent.courseCodes,
         });
-      } else {
-        setStudent(null);
-        studentForm.reset();
       }
+
       setHasSearched(true);
     } catch (error) {
       console.error("Error searching student:", error);

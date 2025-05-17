@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { IDSearchForm } from "./parts/form";
-import { WhatsAppButton } from "./parts/whatsapp-button";
 import { Copyright } from "./parts/copyright";
+import { IDSearchForm } from "./parts/id-search-form";
+import { WhatsAppButton } from "./parts/whatsapp-button";
 
 export default function Home() {
   return (
