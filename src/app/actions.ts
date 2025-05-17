@@ -119,6 +119,9 @@ export async function getCourseRankings() {
           section: 1,
           courseCodes: 1,
         },
+        {
+          sort: { updatedAt: 1 },
+        },
       ),
     ]);
 
@@ -165,7 +168,6 @@ export async function getCourseRankings() {
       }
     }
 
-    // Convert to array and sort by count
     return {
       totalStudents: students.length,
       rankings: Array.from(courseRankings.values()).sort(
