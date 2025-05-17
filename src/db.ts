@@ -2,11 +2,11 @@ import mongoose, { Schema } from "mongoose";
 
 const CourseCodeSchema = new Schema(
   {
-    code: { type: String, required: true },
-    name: { type: String, required: true },
+    code: { type: String, required: true, index: true },
+    name: { type: String, required: true, index: { unique: true } },
   },
   { collection: "CourseCode", timestamps: true },
-).index({ code: 1, name: 1 }, { unique: true });
+);
 
 const RetakeSubmissionSchema = new Schema(
   {
