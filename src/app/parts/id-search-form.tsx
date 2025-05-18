@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getCourses, saveStudent, searchStudent } from "../actions";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -36,6 +35,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import Link from "next/link";
@@ -406,29 +413,44 @@ export function IDSearchForm() {
                                 </Command>
                               </PopoverContent>
                             </Popover>
-                            <div className="flex flex-wrap gap-2">
-                              {field.value.map((code) => {
-                                const course = courses.find(
-                                  (c) => c.code === code,
-                                );
-                                return (
-                                  <Badge
-                                    key={code}
-                                    variant="secondary"
-                                    className="flex items-center gap-1"
-                                  >
-                                    {course ? `${code} - ${course.name}` : code}
-                                    <button
-                                      type="button"
-                                      onClick={() => handleCourseRemove(code)}
-                                      className="ml-1 hover:text-destructive"
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </button>
-                                  </Badge>
-                                );
-                              })}
-                            </div>
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Course Code</TableHead>
+                                  <TableHead>Course Name</TableHead>
+                                  <TableHead className="w-[100px]">
+                                    Action
+                                  </TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {field.value.map((code) => {
+                                  const course = courses.find(
+                                    (c) => c.code === code,
+                                  );
+                                  return (
+                                    <TableRow key={code}>
+                                      <TableCell>{code}</TableCell>
+                                      <TableCell>
+                                        {course?.name || "Unknown"}
+                                      </TableCell>
+                                      <TableCell>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() =>
+                                            handleCourseRemove(code)
+                                          }
+                                          className="h-8 w-8 p-0"
+                                        >
+                                          <X className="h-4 w-4" />
+                                        </Button>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
                           </div>
                         </FormControl>
                         <FormMessage />

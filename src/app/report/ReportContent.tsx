@@ -1,9 +1,22 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { getCourseRankings } from "../actions";
 import PrintButton from "./PrintButton";
 import "./print.css";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Student {
   id: string;
@@ -28,8 +41,6 @@ function CopyableCell({
   className?: string;
 }) {
   const [copied, setCopied] = useState(false);
-  const [showBelow, setShowBelow] = useState(false);
-  const cellRef = useRef<HTMLTableCellElement>(null);
 
   const handleClick = async () => {
     if (value === undefined) return;
@@ -43,48 +54,20 @@ function CopyableCell({
     }
   };
 
-  useEffect(() => {
-    const checkPosition = () => {
-      if (cellRef.current) {
-        const rect = cellRef.current.getBoundingClientRect();
-        const spaceAbove = rect.top;
-        const spaceBelow = window.innerHeight - rect.bottom;
-        // Only show below if there's significantly more space below than above
-        setShowBelow(spaceBelow > spaceAbove + 20);
-      }
-    };
-
-    checkPosition();
-    window.addEventListener("scroll", checkPosition);
-    window.addEventListener("resize", checkPosition);
-
-    return () => {
-      window.removeEventListener("scroll", checkPosition);
-      window.removeEventListener("resize", checkPosition);
-    };
-  }, []);
-
   return (
-    <td
-      ref={cellRef}
-      onClick={handleClick}
-      className={`${className} cursor-pointer hover:bg-gray-50 print:hover:bg-transparent transition-colors relative group`}
-    >
-      {value}
-      <div
-        className={`absolute left-1/2 transform -translate-x-1/2 print:hidden ${
-          showBelow ? "top-full mt-1" : "bottom-full mb-1"
-        }`}
-      >
-        <span
-          className={`bg-gray-800 text-white px-2 py-1 rounded text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${
-            copied ? "!opacity-100" : ""
-          }`}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <TableCell
+          onClick={handleClick}
+          className={`${className} cursor-pointer hover:bg-gray-50 print:hover:bg-transparent transition-colors`}
         >
-          {copied ? "Copied!" : "Click to copy"}
-        </span>
-      </div>
-    </td>
+          {value}
+        </TableCell>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{copied ? "Copied!" : "Click to copy"}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -120,12 +103,12 @@ export default function ReportContent() {
 
   return (
     <div className="container mx-auto p-4 print:p-0 print:max-w-none">
-      <div className="flex justify-between items-center mb-6 print:mb-4">
+      <div className="flex justify-between items-center mb-3 print:mb-1.5">
         <div>
-          <h1 className="text-2xl font-bold print:text-xl">
+          <h1 className="text-xl font-bold print:text-lg">
             Student Report by Course
           </h1>
-          <p className="text-gray-600 print:text-sm print:mt-1">
+          <p className="text-gray-600 print:text-xs print:mt-0.5">
             Total Students: {data.totalStudents}
           </p>
         </div>
@@ -135,65 +118,65 @@ export default function ReportContent() {
       {data.rankings.map((group) => (
         <div
           key={group.code}
-          className="mb-8 print:mb-6 print:break-inside-avoid"
+          className="mb-4 print:mb-2 print:break-inside-avoid"
         >
-          <h2 className="text-xl font-semibold mb-4 print:text-lg print:mb-2 print:bg-gray-100 print:p-2">
+          <h2 className="text-lg font-semibold mb-1.5 print:text-base print:mb-1 print:bg-gray-100 print:p-0.5">
             {group.name} ({group.code}) - {group.count} Students
           </h2>
           <div className="overflow-x-auto print:overflow-visible">
-            <table className="min-w-full bg-white border border-gray-300 print:border-collapse">
-              <thead>
-                <tr className="bg-gray-100 print:bg-gray-100">
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
+            <Table className="border border-gray-300 print:border-collapse text-sm print:text-xs">
+              <TableHeader className="bg-gray-100 print:bg-gray-100">
+                <TableRow>
+                  <TableHead className="text-center print:border print:py-0.5 border-r w-[110px]">
                     Student ID
-                  </th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-left">
+                  </TableHead>
+                  <TableHead className="text-left print:border px-2 print:py-0.5 border-r">
                     Name
-                  </th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-right">
+                  </TableHead>
+                  <TableHead className="text-right print:border px-2 print:py-0.5 border-r w-[60px]">
                     Intake
-                  </th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-right">
+                  </TableHead>
+                  <TableHead className="text-right print:border px-2 print:py-0.5 border-r w-[60px]">
                     Section
-                  </th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
+                  </TableHead>
+                  <TableHead className="text-center print:border px-2 print:py-0.5 border-r w-[100px]">
                     Phone
-                  </th>
-                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
+                  </TableHead>
+                  <TableHead className="text-center print:border px-2 print:py-0.5 w-[120px]">
                     Signature
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {group.students.map((student) => (
-                  <tr key={student.id} className="print:text-sm">
+                  <TableRow key={student.id} className="print:text-xs">
                     <CopyableCell
                       value={student.id}
-                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-center"
+                      className="text-center print:border print:py-0.5 border-r"
                     />
                     <CopyableCell
                       value={student.name}
-                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-left"
+                      className="text-left print:border px-2 print:py-0.5 border-r"
                     />
                     <CopyableCell
                       value={student.intake}
-                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-right"
+                      className="text-right  print:border px-2 print:py-0.5 border-r"
                     />
                     <CopyableCell
                       value={student.section}
-                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-right"
+                      className="text-right  print:border px-2 print:py-0.5 border-r"
                     />
                     <CopyableCell
                       value={student.phone}
-                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-center"
+                      className="text-center print:border px-2 print:py-0.5 border-r"
                     />
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">
+                    <TableCell className="text-center print:border px-2 print:py-0.5 h-7 print:h-8">
                       {/* Empty cell for signature */}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       ))}
