@@ -41,6 +41,7 @@ function CopyableCell({
   className?: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClick = async () => {
     if (value === undefined) return;
@@ -48,14 +49,18 @@ function CopyableCell({
     try {
       await navigator.clipboard.writeText(value.toString());
       setCopied(true);
-      setTimeout(() => setCopied(false), 1000);
+      setOpen(true);
+      setTimeout(() => {
+        setCopied(false);
+        setOpen(false);
+      }, 1000);
     } catch (err) {
       console.error("Failed to copy:", err);
     }
   };
 
   return (
-    <Tooltip>
+    <Tooltip open={open} onOpenChange={setOpen}>
       <TooltipTrigger asChild>
         <TableCell
           onClick={handleClick}
@@ -64,8 +69,11 @@ function CopyableCell({
           {value}
         </TableCell>
       </TooltipTrigger>
-      <TooltipContent>
-        <p>{copied ? "Copied!" : "Click to copy"}</p>
+      <TooltipContent 
+        side="top" 
+        className="bg-primary text-primary-foreground px-2 py-1 text-xs rounded shadow-md"
+      >
+        {copied ? "Copied!" : "Click to copy"}
       </TooltipContent>
     </Tooltip>
   );
