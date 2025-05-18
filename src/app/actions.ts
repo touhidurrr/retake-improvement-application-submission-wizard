@@ -67,6 +67,11 @@ export async function saveStudent(
   studentData: Student,
 ): Promise<Student | null> {
   try {
+    // Check if form submissions are disabled
+    if (process.env.NEXT_PUBLIC_FORM_SUBMISSION_DISABLED === "true") {
+      throw new Error("Form submissions are currently disabled");
+    }
+
     const { _id, ...update } = studentData;
 
     if (update.email !== undefined && update.email.trim() === "") {
