@@ -206,9 +206,9 @@ export function IDSearchForm() {
   };
 
   return (
-    <div className="space-y-8 w-full max-w-md">
+    <div className="space-y-8 w-full max-w-md mx-auto">
       {isFormDisabled ? (
-        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-red-900 shadow-sm">
+        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-red-900 shadow-sm w-full">
           <div className="flex items-center gap-3 mb-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
