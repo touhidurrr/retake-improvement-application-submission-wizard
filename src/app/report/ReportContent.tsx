@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getCourseRankings } from "../actions";
 import PrintButton from "./PrintButton";
 import "./print.css";
@@ -18,6 +18,74 @@ interface CourseGroup {
   name: string;
   count: number;
   students: Student[];
+}
+
+function CopyableCell({
+  value,
+  className,
+}: {
+  value: string | number | undefined;
+  className?: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [showBelow, setShowBelow] = useState(false);
+  const cellRef = useRef<HTMLTableCellElement>(null);
+
+  const handleClick = async () => {
+    if (value === undefined) return;
+
+    try {
+      await navigator.clipboard.writeText(value.toString());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  useEffect(() => {
+    const checkPosition = () => {
+      if (cellRef.current) {
+        const rect = cellRef.current.getBoundingClientRect();
+        const spaceAbove = rect.top;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        // Only show below if there's significantly more space below than above
+        setShowBelow(spaceBelow > spaceAbove + 20);
+      }
+    };
+
+    checkPosition();
+    window.addEventListener("scroll", checkPosition);
+    window.addEventListener("resize", checkPosition);
+
+    return () => {
+      window.removeEventListener("scroll", checkPosition);
+      window.removeEventListener("resize", checkPosition);
+    };
+  }, []);
+
+  return (
+    <td
+      ref={cellRef}
+      onClick={handleClick}
+      className={`${className} cursor-pointer hover:bg-gray-50 print:hover:bg-transparent transition-colors relative group`}
+    >
+      {value}
+      <div
+        className={`absolute left-1/2 transform -translate-x-1/2 print:hidden ${
+          showBelow ? "top-full mt-1" : "bottom-full mb-1"
+        }`}
+      >
+        <span
+          className={`bg-gray-800 text-white px-2 py-1 rounded text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${
+            copied ? "!opacity-100" : ""
+          }`}
+        >
+          {copied ? "Copied!" : "Click to copy"}
+        </span>
+      </div>
+    </td>
+  );
 }
 
 export default function ReportContent() {
@@ -91,25 +159,36 @@ export default function ReportContent() {
                   <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
                     Phone
                   </th>
+                  <th className="px-4 py-2 border print:border print:px-2 print:py-1 print:text-sm text-center">
+                    Signature
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {group.students.map((student) => (
                   <tr key={student.id} className="print:text-sm">
+                    <CopyableCell
+                      value={student.id}
+                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-center"
+                    />
+                    <CopyableCell
+                      value={student.name}
+                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-left"
+                    />
+                    <CopyableCell
+                      value={student.intake}
+                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-right"
+                    />
+                    <CopyableCell
+                      value={student.section}
+                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-right"
+                    />
+                    <CopyableCell
+                      value={student.phone}
+                      className="px-4 py-2 border print:border print:px-2 print:py-1 text-center"
+                    />
                     <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">
-                      {student.id}
-                    </td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-left">
-                      {student.name}
-                    </td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-right">
-                      {student.intake}
-                    </td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-right">
-                      {student.section}
-                    </td>
-                    <td className="px-4 py-2 border print:border print:px-2 print:py-1 text-center">
-                      {student.phone}
+                      {/* Empty cell for signature */}
                     </td>
                   </tr>
                 ))}

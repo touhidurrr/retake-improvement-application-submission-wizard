@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import { createHash } from "crypto";
 
 if (!process.env.ADMIN_PASSWORD) {
-  console.error('ADMIN_PASSWORD environment variable is not set!');
+  console.error("ADMIN_PASSWORD environment variable is not set!");
 }
 
 interface Student {
@@ -85,7 +85,10 @@ export async function saveStudent(
     // sanitize data
     if (update.name) update.name = sanitizeString(update.name);
     if (update.email) update.email = sanitizeString(update.email);
-    if (update.phone) update.phone = sanitizeString(update.phone.replaceAll('-', '').replace(/^\s*\+?880/, "0"));
+    if (update.phone)
+      update.phone = sanitizeString(
+        update.phone.replaceAll("-", "").replace(/^\s*\+?880/, "0"),
+      );
     if (update.section)
       update.section = sanitizeString(update.section.replace(/^\s*0/, ""));
 
@@ -119,14 +122,12 @@ interface CourseRankingsOptions {
 function generateAuthToken() {
   const timestamp = Date.now();
   const secret = process.env.ADMIN_PASSWORD || "";
-  return createHash("sha256")
-    .update(`${timestamp}:${secret}`)
-    .digest("hex");
+  return createHash("sha256").update(`${timestamp}:${secret}`).digest("hex");
 }
 
 export async function checkAuth() {
   if (!process.env.ADMIN_PASSWORD) {
-    console.error('ADMIN_PASSWORD environment variable is not set!');
+    console.error("ADMIN_PASSWORD environment variable is not set!");
     return false;
   }
 
@@ -168,7 +169,9 @@ export async function authenticate(password: string) {
   return false;
 }
 
-export async function getCourseRankings({ includePhone = false }: CourseRankingsOptions = {}) {
+export async function getCourseRankings({
+  includePhone = false,
+}: CourseRankingsOptions = {}) {
   try {
     const isAuthenticated = await checkAuth();
     if (!isAuthenticated) {
