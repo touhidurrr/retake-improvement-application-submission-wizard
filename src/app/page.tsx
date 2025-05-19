@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Copyright } from "./parts/copyright";
-import { IDSearchForm } from "./parts/id-search-form";
 import { WhatsAppButton } from "./parts/whatsapp-button";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -10,27 +10,25 @@ export default function Home() {
         <h1 className="text-3xl font-bold text-center mb-8">
           Retake/Improvement Application Wizard
         </h1>
+        <p className="text-black font-bold text-center mb-8">ধন্যবাদ সবাইকে!</p>
         <p className="text-gray-600 text-center mb-8">
-          স্যার বলেছে কোনো কোর্সে রিটেক / ইম্প্রুভমেন্ট মিলিয়ে ১০/১৫ জন হলে নতুন
-          সেকশনই খোলা যেতে পারে। তাই বানিয়ে ফেললাম এই ওয়েবসাইটটা। এটা আনঅফিসিয়াল
-          তবে ১৮ তারিখ সবার তালিকা নিয়ে স্যারের কাছে গিয়ে নতুন সেকশনের ব্যাপারে
-          ডিসকাস করব ইনশাল্লাহ। এর আগেই সাবমিট করুন। ১৮ তারিখ রাত ১ টা পর্যন্ট
-          লাস্ট ডেট ধরে রাখতে পারেন। কোনো সমস্যা থাকলে জানান
-          admin@courseimprove.studio এ।
+          আপনারা আপনাদের তথ্য দিয়ে আমাদের খুলতে সাহায্য করেছেন নতুন নতুন সব
+          সেকশন! আপনাদের নামের তালিকা CSE ডিপার্ট্মেন্ট এর অ্যাডমিনকে পাঠানো
+          হয়েছে!
         </p>
-        <p className="text-gray-800 text-center mb-8">
-          নোটঃ আপনার যেসব কোর্সে রিটেক আছে বা ইম্প্রুভমেন্ট নিতে চান এমন সব
-          কোর্সই সিলেক্ট করবেন। কোনোটা বাদ দিবেন না। তাহলে সেকশন খোলা সহজ হবে।
-          সেকশন অ্যাপ্রুভ হলে ফোনে জানানো হবে ইনশাল্লাহ। ফোন ম্যান্ডেটরি কারণ
-          অ্যাপ্লিকেশন করলে ফোন নম্বর চায়।
+        <p className="text-gray-600 text-center mb-8">
+          এখন চেয়ারম্যান স্যারের রুমে গিয়ে <b>৫ জুনের মধ্যে</b> আপনার পছন্দের
+          কোর্সে আপনার নামের পাশে সই করে আপনার আবেদনটি নিশ্চিত করুন।{" "}
+          <b>সই না করলে কোর্স অ্যাড হবে না</b> তাই দ্রুত সই করুন!
         </p>
-        <p className="text-black-800 text-center mb-8">
-          কোন কোর্সে কতজন হয়েছে দেখতে ক্লিক করুন{" "}
-          <Link href={"/ranking"} className="underline">
-            এখানে।
-          </Link>
-        </p>
-        <IDSearchForm />
+
+        <div className="flex justify-center mb-8">
+          <Button asChild size="lg">
+            <Link href={"/ranking"}>
+              কোর্স অনুযায়ী আবেদনকারীদের তালিকা দেখুন
+            </Link>
+          </Button>
+        </div>
       </main>
 
       <div className="py-4">

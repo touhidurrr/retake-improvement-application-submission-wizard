@@ -69,8 +69,8 @@ function CopyableCell({
           {value}
         </TableCell>
       </TooltipTrigger>
-      <TooltipContent 
-        side="top" 
+      <TooltipContent
+        side="top"
         className="bg-primary text-primary-foreground px-2 py-1 text-xs rounded shadow-md"
       >
         {copied ? "Copied!" : "Click to copy"}
