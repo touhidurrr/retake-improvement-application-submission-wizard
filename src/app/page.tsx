@@ -13,7 +13,7 @@ export default function Home() {
         <p className="text-black font-bold text-center mb-8">ধন্যবাদ সবাইকে!</p>
         <p className="text-gray-600 text-center mb-8">
           আপনারা আপনাদের তথ্য দিয়ে আমাদের খুলতে সাহায্য করেছেন নতুন নতুন সব
-          সেকশন! আপনাদের নামের তালিকা CSE ডিপার্ট্মেন্ট এর অ্যাডমিনকে পাঠানো
+          সেকশন! আপনাদের নামের তালিকা CSE ডিপার্টমেন্ট এর অ্যাডমিনকে পাঠানো
           হয়েছে!
         </p>
         <p className="text-gray-600 text-center mb-8">
